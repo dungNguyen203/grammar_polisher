@@ -1,0 +1,8 @@
+1. [[Comparison Sentences]]
+2. [[Conditional Sentences]]
+3. [[Exclamatory Sentences]]
+4. [[Imperative Sentences]]
+5. [[Passive voice]]
+6. [[Question Tags]]
+7. [[Reported Speech]]
+8. [[Wish Sentences]]

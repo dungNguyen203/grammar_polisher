@@ -1,0 +1,49 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:ios)
+
+platform :ios do
+  def root_path
+    Dir.pwd.sub(/.*\Kfastlane/, '').sub(/.*\Kandroid/, '').sub(/.*\Kios/, '').sub(/.*\K\/\//, '')
+  end
+
+  # Have an easy way to run flutter tasks on the root of the project
+  lane :sh_on_root do |options|
+    command = options[:command]
+    sh("cd #{root_path} && #{command}")
+  end
+
+  lane :build do
+      # build with flutter, this environment variable will link to the correct .env file
+      sh_on_root(command: "flutter build ios --flavor #{ENV['SCHEME']} --dart-define-from-file=.env/#{ENV['SCHEME']}.json")
+      # build the app
+      build_app(workspace: "Runner.xcworkspace", scheme: ENV['SCHEME'])
+  end
+
+  desc "Push a new beta build to TestFlight"
+  lane :release do
+    app_store_connect_api_key(
+      key_id: ENV['KEY_ID'],
+      issuer_id: ENV['ISSUER_ID'],
+      key_filepath: "./fastlane/#{ENV['AUTH_KEY']}",
+      duration: 1200,
+      in_house: false
+    )
+    build
+    upload_to_testflight(skip_waiting_for_build_processing: true)
+    upload_symbols_to_crashlytics(dsym_path: "./Runner.app.dSYM.zip")
+  end
+end
