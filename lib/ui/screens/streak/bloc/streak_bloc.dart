@@ -45,15 +45,19 @@ class StreakBloc extends Bloc<StreakEvent, StreakState> {
     ));
     _streakTimer?.cancel();
     _streakTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (isClosed) {
+      final newSpentTimeToday = _streakRepository.getTimeStreak() + 1;
+      debugPrint('StreakBloc: newSpentTimeToday: $newSpentTimeToday');
+      if (isClosed || newSpentTimeToday >= timePerDayNeeded) {
+        debugPrint('StreakBloc: Timer cancelled');
+        _streakTimer?.cancel();
         timer.cancel();
         return;
       }
-      final newSpentTimeToday = _streakRepository.getTimeStreak() + 1;
       add(StreakEvent.emitState(state.copyWith(
         spentTimeToday: newSpentTimeToday,
       )));
       if (!_streakRepository.streakedToday) {
+        
         _streakRepository.setTimeStreak(newSpentTimeToday);
       }
       debugPrint('StreakBloc: newSpentTimeToday: $newSpentTimeToday');

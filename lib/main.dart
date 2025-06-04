@@ -10,6 +10,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:grammar_polisher/firebase_options.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
@@ -34,7 +35,9 @@ void main() async {
       statusBarIconBrightness: isDarkMode ? Brightness.light : Brightness.dark,
     ),
   );
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   await Future.wait([
     MobileAds.instance.initialize(),
     LocalNotificationsTools().initialize(
