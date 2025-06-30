@@ -14,7 +14,7 @@ part 'generated/streak_bloc.freezed.dart';
 
 class StreakBloc extends Bloc<StreakEvent, StreakState> {
   final StreakRepository _streakRepository;
-  static const int timePerDayNeeded = 60 * 5; // 5 minutes
+  static const int timePerDayNeeded = 10; // 5 minutes
 
   Timer? _streakTimer;
 
@@ -47,7 +47,7 @@ class StreakBloc extends Bloc<StreakEvent, StreakState> {
     _streakTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       final newSpentTimeToday = _streakRepository.getTimeStreak() + 1;
       debugPrint('StreakBloc: newSpentTimeToday: $newSpentTimeToday');
-      if (isClosed || newSpentTimeToday >= timePerDayNeeded) {
+      if (isClosed) {
         debugPrint('StreakBloc: Timer cancelled');
         _streakTimer?.cancel();
         timer.cancel();
@@ -56,6 +56,7 @@ class StreakBloc extends Bloc<StreakEvent, StreakState> {
       add(StreakEvent.emitState(state.copyWith(
         spentTimeToday: newSpentTimeToday,
       )));
+      debugPrint('StreakBloc: spentTimeToday: ${state.spentTimeToday}');
       if (!_streakRepository.streakedToday) {
         
         _streakRepository.setTimeStreak(newSpentTimeToday);
@@ -69,6 +70,12 @@ class StreakBloc extends Bloc<StreakEvent, StreakState> {
           longestStreak: newLongestStreak,
         )));
         _streakRepository.setStreak(newStreak);
+      }
+      if (newSpentTimeToday > timePerDayNeeded) {
+        timer.cancel();
+
+        _streakTimer?.cancel();
+        debugPrint('StreakBloc: reset time streak');
       }
     });
   }

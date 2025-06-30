@@ -74,6 +74,6 @@ class _AppState extends State<App> {
     super.initState();
     context.read<SettingsBloc>().add(const SettingsEvent.getSettings());
     AppLifecycleReactor.listenToShowAds();
-    context.read<IapBloc>().add(const IapEvent.listenForPurchases());
+    // context.read<IapBloc>().add(const IapEvent.listenForPurchases());
   }
 }

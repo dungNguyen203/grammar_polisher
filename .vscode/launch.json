@@ -1,0 +1,28 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "grammar_polisher (Development)",
+        "cwd": "",
+        "request": "launch",
+        "type": "dart",
+        "args": ["--flavor", "development", "--dart-define-from-file", ".env/development.json"]
+
+      },
+      {
+        "name": "grammar_polisher (Production)",
+        "cwd": "",
+        "request": "launch",
+        "type": "dart",
+        "args": [
+          "--flavor",
+          "production",
+          "--dart-define-from-file",
+          ".env/production.json"
+        ]
+      }
+    ]
+}

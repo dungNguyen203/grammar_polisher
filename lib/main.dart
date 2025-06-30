@@ -1,6 +1,7 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -73,6 +74,18 @@ void main() async {
       return true;
     };
   }
+
+  final fcmToken = await FirebaseMessaging.instance.getToken();
+  debugPrint('FCM Token: $fcmToken');
+  await FirebaseMessaging.instance.setAutoInitEnabled(true);
+
+  FirebaseMessaging.instance.onTokenRefresh.listen((fcmToken) {
+    // TODO: If necessary send token to application server.
+    debugPrint('FCM Token refreshed: $fcmToken');
+  }).onError((err) {
+    // Error getting token.
+  });
+  
 
   tz.initializeTimeZones();
   final currentTimeZone = await FlutterTimezone.getLocalTimezone();
